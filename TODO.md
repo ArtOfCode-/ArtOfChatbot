@@ -1,0 +1,4 @@
+- Automate Room ID detection line ~115
+- Admins (visi-source)
+- Initiator (automate detection) can shut down
+- Instance random IDs for shutdowns? (Multiple bots in one room get shut down at once)
