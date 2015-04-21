@@ -1,12 +1,3 @@
-/***************************************************
- * TODO
- * 
- * - user initiating can shut down
- * - admins?
- * - alive command : points out it's still running
- *
- ***************************************************/
-
 window.chatbot = {};
 
 chatbot.utils = {};
@@ -19,9 +10,13 @@ chatbot.commands.help = function(arguments, user) {
 	var commandList = "";
 	var commandKeys = Object.keys(chatbot.commands.commandList);
 	for(var i = 0; i < commandKeys.length; i++) {
-		commandList += commandKeys[i];
+		commandList += ", " + commandKeys[i];
 	}
 	chatbot.utils.sendUserMessage(user, "Commands: " + commandList, chatbot.utils.roomId);
+}
+
+chatbot.commands.running = function(arguments, user) {
+	chatbot.utils.sendUserMessage(user, "Alive and kicking!", chatbot.utils.roomId);
 }
 
 chatbot.commands.lowQuality = function(arguments, user) {
@@ -35,13 +30,13 @@ chatbot.commands.lowQuality = function(arguments, user) {
 }
 
 chatbot.commands.findUser = function(arguments, user) {
-	chatbot.utils.sendUserMessage(user, "This command is on the way - wait for ArtOfCode to implement it.", chatbot.utils.roomId);
+	chatbot.utils.sendUserMessage(user, "This feature has yet to be implemented.", chatbot.utils.roomId);
 }
 
 chatbot.commands.stop = function(arguments, user) {
 	if(user !== "ArtOfCode" && user !== chatbot.utils.initiatingUser) {
 		chatbot.utils.sendMessage("I'm sorry, @" + user + ". I can't let you do that.", chatbot.utils.roomId);
-		chatbot.utils.sendMessage("If you want to shut me down, ping ArtOfCode to do it.", chatbot.utils.roomId);
+		chatbot.utils.sendMessage("If you want to shut me down, ping " + chatbot.utils.initiatingUser + " to do it.", chatbot.utils.roomId);
 	}
 	else {
 		$("body").off("DOMNodeInserted");
@@ -60,7 +55,8 @@ chatbot.commands.commandList = {
 	"stop": chatbot.commands.stop,
 	"low-quality": chatbot.commands.lowQuality,
 	"find-user": chatbot.commands.findUser,
-	"champagne": chatbot.commands.champagne
+	"champagne": chatbot.commands.champagne,
+	"running?": chatbot.commands.running
 };
 
 // ================= UTILITIES =================
@@ -75,7 +71,7 @@ chatbot.utils.debug = function(str) {
 }
 
 chatbot.utils.sendMessage = function(text, id) {
-	text = "[Chatbot] " + text;
+	text = "[" + chatbot.utils.name + "] " + text;
 	function send() {
 		$.ajax({
 			"type": "POST",
@@ -88,8 +84,8 @@ chatbot.utils.sendMessage = function(text, id) {
 		});
 	}
 	function error() {
-		chatbot.utils.debug("Could not send, waiting 1000.");
-		window.setTimeout(send, 1000);
+		chatbot.utils.debug("Could not send, waiting 1500.");
+		window.setTimeout(send, 1500);
 	}
 	send();
 }
@@ -99,23 +95,6 @@ chatbot.utils.sendUserMessage = function(user, text, id) {
 	chatbot.utils.sendMessage(text, id);
 }
 
-chatbot.utils.parseLowQualityResults = function(data) {
-	var message = "";
-	$("<div/>").hide().html(data);
-	var rows = $(".slick-row");
-	rows.each(function(index, element) {
-		if(index < 5) {
-			var cells = $(this).children(".slick-cell");
-			message += "[#" + (index + 1) + "](" + cells[0].children("a").attr("href") + "), ";
-			message += " length: " + cells[1].text() + ", ";
-			message += " score: " + cells[3].text() + "; ";
-		}
-		else {
-			return message;
-		}
-	});
-}
-
 // ================== PROGRAM ==================
 
 chatbot.program.main = function() {
@@ -123,16 +102,16 @@ chatbot.program.main = function() {
 	
 	var url = location.href;
 	url = url.split("/");
-	chatbot.utils.roomId = isNaN(url[2]) ? "-1" : url[2];
+	chatbot.utils.roomId = isNaN(url[4]) ? "-1" : url[4];
 	if(chatbot.utils.roomId === "-1") {
-		chatbot.utils.debug("This URL doesn't appear to represent a valid StackExchange chatroom. ArtOfChatbot cannot run here.");
+		chatbot.utils.debug("This URL doesn't appear to represent a valid StackExchange chatroom. Chatbot cannot run here.");
 		return;
 	}
 	
 	chatbot.utils.initiatingUser = $(".user-container > .avatar > img").attr("alt");
-	chatbot.utils.debug("ArtOfChatbot running, initiated by " + chatbot.utils.initiatingUser);
+	chatbot.utils.debug(chatbot.utils.name + " running, initiated by " + chatbot.utils.initiatingUser);
 	
-	chatbot.utils.sendMessage("**ArtOfChatbot has been started!** Run 'help' for a list of commands.", chatbot.utils.roomId);
+	chatbot.utils.sendMessage("**" + chatbot.utils.name + " has been started!** Run 'help' for a list of commands.", chatbot.utils.roomId);
 	
 	$("body").on("DOMNodeInserted", function(event) {
 		if($(event.target).hasClass("message") && $(event.target).hasClass("neworedit")) {
@@ -157,7 +136,3 @@ chatbot.program.handleNewMessage = function(message, user) {
 		}
 	}
 }
-
-// ================== RUNTIME ==================
-
-chatbot.program.main();

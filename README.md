@@ -9,9 +9,9 @@ The API can be found in the `chatapi.js` file. It's easy to use: copy the code i
 **`chatAPI.addChatbotCommand(name, action)`** - this is the statement that will add a command to the chatbot. `name` is the command name. No need to include a forward slash as this is automatically added. `action` is a function that will be run when the command is found in chat. You can use `chatAPI.sendMessage(messageText)` to send messages within this function. It will be passed two parameters: `arguments` and `user`, where `arguments` is an array giving the arguments added to the command, and `user` is the username of the user who ran the command. Here's an example that pings back the argument of the command:
 
     chatAPI.addChatbotCommand("echo", function(arguments, user) {
-        // args[0] is the command name. Arguments start at args[1].
-	    if(args[1]) {
-            chatAPI.sendMessage("@" + user + ": " + args[1]);
+        // arguments[0] is the command name. Arguments start at arguments[1].
+	    if(arguments[1]) {
+            chatAPI.sendMessage("@" + user + ": " + arguments[1]);
         }
     });
 

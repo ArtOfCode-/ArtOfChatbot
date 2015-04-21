@@ -22,6 +22,10 @@ chatAPI.runChatbot = function() {
 	}
 }
 
+chatAPI.setChatbotName = function(newName) {
+	chatbot.utils.name = newName;
+}
+
 chatAPI.addChatbotCommand = function(name, action) {
 	if(!chatbot) {
 		throw new Error("Chatbot JS must be loaded first.");
@@ -45,6 +49,6 @@ chatAPI.sendMessage = function(messageText) {
 	}
 }
 
-chatAPI.injectDependency("http://jenkinsstuff.bl.ee/se.chat/api/latest/latest.min.js", function() {
+chatAPI.injectDependency("http://jenkinsstuff.bl.ee/se.chat/api/latest/latest.js", function() {
 	console.log("Chatbot JS is loaded.");
 });
