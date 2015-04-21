@@ -40,7 +40,7 @@ chatbot.commands.stop = function(arguments, user) {
 	}
 	else {
 		$("body").off("DOMNodeInserted");
-		chatbot.utils.sendUserMessage(user, "ArtOfChatbot shut down. To restart, run `chatbot.program.main()` from your console.", chatbot.utils.roomId);
+		chatbot.utils.sendUserMessage(user, chatbot.utils.name + " shut down. To restart, run `chatbot.program.main()` from your console.", chatbot.utils.roomId);
 		chatbot.utils.isRunning = false;
 	}
 }
@@ -64,6 +64,7 @@ chatbot.commands.commandList = {
 chatbot.utils.roomId = "17213";
 chatbot.utils.initiatingUser = "";
 chatbot.utils.isRunning = false;
+chatbot.utils.name = "ArtOfChatbot";
 
 chatbot.utils.debug = function(str) {
     var date = new Date().toTimeString().substring(0, 8);

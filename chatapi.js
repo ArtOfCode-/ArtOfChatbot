@@ -26,6 +26,14 @@ chatAPI.setChatbotName = function(newName) {
 	chatbot.utils.name = newName;
 }
 
+chatAPI.getChatbotName = function() {
+	return chatbot.utils.name;
+}
+
+chatAPI.getActiveRoomId = function() {
+	return chatbot.utils.roomId;
+}
+
 chatAPI.addChatbotCommand = function(name, action) {
 	if(!chatbot) {
 		throw new Error("Chatbot JS must be loaded first.");
