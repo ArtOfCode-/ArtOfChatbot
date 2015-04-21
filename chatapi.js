@@ -27,7 +27,12 @@ chatAPI.addChatbotCommand = function(name, action) {
 		throw new Error("Chatbot JS must be loaded first.");
 	}
 	else {
-		chatbot.commands.commandList[name] = action;
+		if(typeof(action) === "function") {
+			chatbot.commands.commandList[name] = action;
+		}
+		else {
+			throw new TypeError("action must be an invocable function!");
+		}
 	}
 }
 
