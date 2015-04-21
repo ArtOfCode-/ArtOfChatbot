@@ -1,4 +1,13 @@
-var chatbot = {};
+/***************************************************
+ * TODO
+ * 
+ * - user initiating can shut down
+ * - admins?
+ * - alive command : points out it's still running
+ *
+ ***************************************************/
+
+window.chatbot = {};
 
 chatbot.utils = {};
 chatbot.program = {};
@@ -7,7 +16,12 @@ chatbot.commands = {};
 // ================= COMMANDS ==================
 
 chatbot.commands.help = function(arguments, user) {
-	chatbot.utils.sendUserMessage(user, "Commands: help, low-quality, find-user", chatbot.utils.roomId);
+	var commandList = "";
+	var commandKeys = Object.keys(chatbot.commands.commandList);
+	for(var i = 0; i < commandKeys.length; i++) {
+		commandList += commandKeys[i];
+	}
+	chatbot.utils.sendUserMessage(user, "Commands: " + commandList, chatbot.utils.roomId);
 }
 
 chatbot.commands.lowQuality = function(arguments, user) {
@@ -25,13 +39,14 @@ chatbot.commands.findUser = function(arguments, user) {
 }
 
 chatbot.commands.stop = function(arguments, user) {
-	if(user !== "ArtOfCode") {
+	if(user !== "ArtOfCode" && user !== chatbot.utils.initiatingUser) {
 		chatbot.utils.sendMessage("I'm sorry, @" + user + ". I can't let you do that.", chatbot.utils.roomId);
 		chatbot.utils.sendMessage("If you want to shut me down, ping ArtOfCode to do it.", chatbot.utils.roomId);
 	}
 	else {
 		$("body").off("DOMNodeInserted");
 		chatbot.utils.sendUserMessage(user, "ArtOfChatbot shut down. To restart, run `chatbot.program.main()` from your console.", chatbot.utils.roomId);
+		chatbot.utils.isRunning = false;
 	}
 }
 
@@ -51,16 +66,8 @@ chatbot.commands.commandList = {
 // ================= UTILITIES =================
 
 chatbot.utils.roomId = "17213";
-
-chatbot.utils.injectDependency = function(url, callback) {
-    var validator = /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
-    var scriptElement = document.createElement("script");
-    scriptElement.src = url.match(validator) ? url : "";
-    scriptElement.addEventListener("load", function() {
-        callback();
-    });
-    document.body.appendChild(scriptElement);
-}
+chatbot.utils.initiatingUser = "";
+chatbot.utils.isRunning = false;
 
 chatbot.utils.debug = function(str) {
     var date = new Date().toTimeString().substring(0, 8);
@@ -112,22 +119,26 @@ chatbot.utils.parseLowQualityResults = function(data) {
 // ================== PROGRAM ==================
 
 chatbot.program.main = function() {
-    chatbot.utils.roomId = prompt("Enter this room's ID (can be found in the URL):");
-	if(isNaN(chatbot.utils.roomId)) {
-		alert("Invalid room ID entered. Exiting. Run 'chatbot.program.main()' from the console to restart.");
+	chatbot.utils.isRunning = true;
+	
+	var url = location.href;
+	url = url.split("/");
+	chatbot.utils.roomId = isNaN(url[2]) ? "-1" : url[2];
+	if(chatbot.utils.roomId === "-1") {
+		chatbot.utils.debug("This URL doesn't appear to represent a valid StackExchange chatroom. ArtOfChatbot cannot run here.");
 		return;
 	}
-	else {
-		chatbot.utils.debug("ArtOfChatbot running. Run 'help' for a list of commands.");
-	}
 	
-	chatbot.utils.sendMessage("ArtOfChatbot has been started! Run 'help' for a list of commands.", chatbot.utils.roomId);
+	chatbot.utils.initiatingUser = $(".user-container > .avatar > img").attr("alt");
+	chatbot.utils.debug("ArtOfChatbot running, initiated by " + chatbot.utils.initiatingUser);
 	
-	$("body").on("DOMNodeInserted", function(elem) {
-		if($(elem.target).hasClass("message") && $(elem.target).hasClass("neworedit")) {
-			var signature = $(elem.target).parent().siblings(".signature");
+	chatbot.utils.sendMessage("**ArtOfChatbot has been started!** Run 'help' for a list of commands.", chatbot.utils.roomId);
+	
+	$("body").on("DOMNodeInserted", function(event) {
+		if($(event.target).hasClass("message") && $(event.target).hasClass("neworedit")) {
+			var signature = $(event.target).parent().siblings(".signature");
 			var user = signature.children(".username").text();
-			var message = $(elem.target).children(".content").text();
+			var message = $(event.target).children(".content").text();
 			chatbot.program.handleNewMessage(message, user);
 		}
 	});
