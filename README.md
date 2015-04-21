@@ -14,6 +14,8 @@ The API can be found in the `chatapi.js` file. It's easy to use: copy the code i
             chatAPI.sendMessage("@" + user + ": " + arguments[1]);
         }
     });
+    
+**`chatAPI.setChatbotName(newName)`** - sets the chatbot's name to `newName`. This name will be displayed on all chatbot messages.
 
 **`chatAPI.runChatbot()`** - fairly self-explanatory. Runs the chatbot, i.e. starts it accepting commands and responding.
 
