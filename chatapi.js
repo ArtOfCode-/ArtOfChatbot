@@ -49,6 +49,6 @@ chatAPI.sendMessage = function(messageText) {
 	}
 }
 
-chatAPI.injectDependency("http://jenkinsstuff.bl.ee/se.chat/api/latest/latest.js", function() {
+chatAPI.injectDependency("https://raw.githubusercontent.com/ArtOfCode-/ArtOfChatbot/master/bot.js", function() {
 	console.log("Chatbot JS is loaded.");
 });
