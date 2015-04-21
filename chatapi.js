@@ -7,6 +7,7 @@ chatAPI.injectDependency = function(url, callback) {
     var validator = /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
     var scriptElement = document.createElement("script");
     scriptElement.src = url.match(validator) ? url : "";
+	scriptElement.setAttribute("type", "text/javascript");
     scriptElement.addEventListener("load", function() {
         callback();
     });
@@ -57,6 +58,6 @@ chatAPI.sendMessage = function(messageText) {
 	}
 }
 
-chatAPI.injectDependency("https://raw.githubusercontent.com/ArtOfCode-/ArtOfChatbot/master/bot.js", function() {
+chatAPI.injectDependency("http://jenkinsstuff.bl.ee/se.chat/api/bot.js", function() {
 	console.log("Chatbot JS is loaded.");
 });
