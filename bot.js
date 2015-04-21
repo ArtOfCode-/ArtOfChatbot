@@ -10,7 +10,12 @@ chatbot.commands.help = function(arguments, user) {
 	var commandList = "";
 	var commandKeys = Object.keys(chatbot.commands.commandList);
 	for(var i = 0; i < commandKeys.length; i++) {
-		commandList += ", " + commandKeys[i];
+		if(i == 0) {
+			commandList += commandKeys[i];
+		}
+		else {
+			commandList += ", " + commandKeys[i];
+		}
 	}
 	chatbot.utils.sendUserMessage(user, "Commands: " + commandList, chatbot.utils.roomId);
 }
