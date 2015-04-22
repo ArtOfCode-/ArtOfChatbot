@@ -4,7 +4,9 @@ Simple in-browser JavaScript StackExchange chatting
 ArtOfChatbot is a two-part creation. The chat API is an easy way to create and run your own bots with custom commands (and soon to be custom-a-lot-of-other-things too). The bot is the code that the chatbot itself runs off.
 
 ## ChatAPI
-The API can be found in the `chatapi.js` file. It's easy to use: copy the code into your browser's console and hit Enter when in a StackExchange chatroom. The API will load the necessary code for you to run your own bot. There are a few JS statements you will want to run to use your chatbot:
+The API can be found in the `chatapi.js` file. It's easy to use: copy the code into your browser's console and hit Enter when in a StackExchange chatroom. The API will load the necessary code for you to run your own bot. There are a few JS statements you will want to run to use your chatbot. These are listed in API Commands, below.
+
+## API Commands
 
 **`chatAPI.addChatbotCommand(name, action)`** - this is the statement that will add a command to the chatbot. `name` is the command name. No need to include a forward slash as this is automatically added. `action` is a function that will be run when the command is found in chat. You can use `chatAPI.sendMessage(messageText)` to send messages within this function. It will be passed two parameters: `arguments` and `user`, where `arguments` is an array giving the arguments added to the command, and `user` is the username of the user who ran the command. Here's an example that pings back the argument of the command:
 
@@ -16,6 +18,14 @@ The API can be found in the `chatapi.js` file. It's easy to use: copy the code i
     });
     
 **`chatAPI.setChatbotName(newName)`** - sets the chatbot's name to `newName`. This name will be displayed on all chatbot messages.
+
+**`chatAPI.getChatbotName()`** - returns the current name of the chatbot.
+
+**`chatAPI.getActiveRoomId()`** - returns the ID of the chatroom the bot is posting to.
+
+**`chatAPI.setCommandPrefix(newPrefix)`** - sets the string that all commands must be preceded by to be recognised.
+
+**`chatAPI.getCommandPrefix()`** - returns the current command prefix.
 
 **`chatAPI.runChatbot()`** - fairly self-explanatory. Runs the chatbot, i.e. starts it accepting commands and responding.
 
