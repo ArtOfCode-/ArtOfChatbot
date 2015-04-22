@@ -4,7 +4,7 @@ Simple in-browser JavaScript StackExchange chatting
 ArtOfChatbot is a two-part creation. The chat API is an easy way to create and run your own bots with custom commands (and soon to be custom-a-lot-of-other-things too). The bot is the code that the chatbot itself runs off.
 
 ## ChatAPI
-The API can be found in the `chatapi.js` file. It's easy to use: copy the code into your browser's console and hit Enter when in a StackExchange chatroom. The API will load the necessary code for you to run your own bot. There are a few JS statements you will want to run to use your chatbot. These are listed in API Commands, below.
+The API can be found in the `chatapi.js` file. It's easy to use: copy the code into your browser's console and hit Enter when in a StackExchange chatroom. The API will load the necessary code for you to run your own bot. There are a few JS statements you will want to run to use your chatbot. These are listed in API Commands, below. I suggest you try out combinations of these, then save them all in one file when you've got a chatbot you're happy with, so you can just copy-paste them into the console.
 
 ## API Commands
 
@@ -26,6 +26,8 @@ The API can be found in the `chatapi.js` file. It's easy to use: copy the code i
 **`chatAPI.setCommandPrefix(newPrefix)`** - sets the string that all commands must be preceded by to be recognised.
 
 **`chatAPI.getCommandPrefix()`** - returns the current command prefix.
+
+**`chatAPI.sendMessage(messageText)`** - posts a message to the chatroom with the text of `messageText`.
 
 **`chatAPI.runChatbot()`** - fairly self-explanatory. Runs the chatbot, i.e. starts it accepting commands and responding.
 
