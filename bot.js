@@ -80,6 +80,7 @@ chatbot.utils.roomId = "17213";
 chatbot.utils.initiatingUser = "";
 chatbot.utils.isRunning = false;
 chatbot.utils.name = "ArtOfChatbot";
+chatbot.utils.commandPrefix = "/"
 
 chatbot.utils.debug = function(str) {
     var date = new Date().toTimeString().substring(0, 8);
@@ -141,7 +142,7 @@ chatbot.program.main = function() {
 
 chatbot.program.handleNewMessage = function(message, user) {
 	chatbot.utils.debug("Recieved message '" + message + "' from " + user);
-	if(message.startsWith("/")) {
+	if(message.startsWith(chatbot.utils.commandPrefix)) {
 		var commandName = message.split(" ")[0].substring(1);
 		chatbot.utils.debug("Starts with /, interpreting as command '" + commandName + "'.");
 		try {
