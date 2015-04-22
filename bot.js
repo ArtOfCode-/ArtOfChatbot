@@ -35,7 +35,17 @@ chatbot.commands.lowQuality = function(arguments, user) {
 }
 
 chatbot.commands.findUser = function(arguments, user) {
-	chatbot.utils.sendUserMessage(user, "This feature has yet to be implemented.", chatbot.utils.roomId);
+	if(!arguments[1]) {
+		chatbot.utils.sendUserMessage(user, "Correct usage is '/find-user <id>'.", chatbot.utils.roomId);
+		return;
+	}
+	if(isNaN(arguments[1])) {
+		chatbot.utils.sendUserMessage(user, "Correct usage is '/find-user <id>'.", chatbot.utils.roomId);
+		return;
+	}
+	else {
+		chatbot.utils.sendUserMessage(user, "[User " + arguments[1] + "](http://worldbuilding.stackexchange.com/users/" + arguments[1] + ")", chatbot.utils.roomId);
+	}
 }
 
 chatbot.commands.stop = function(arguments, user) {
