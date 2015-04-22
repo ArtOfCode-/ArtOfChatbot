@@ -1,5 +1,5 @@
 /***********************************
- * StackExchange Chat API version 1.0.0
+ * StackExchange Chat API version 1.2.0
  * author: ArtOfCode
  * repo: https://github.com/ArtOfCode-/ArtOfChatbot
  ***********************************/
@@ -57,7 +57,7 @@ window.chatAPI = {
 	
 	getCommandPrefix: function() {
 		return chatbot.utils.commandPrefix;
-	}
+	},
 
 	sendMessage: function(messageText) {
 		if(!chatbot || !chatbot.utils.isRunning) {

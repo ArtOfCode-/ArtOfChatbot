@@ -1,14 +1,24 @@
+/***********************************
+ * StackExchange Chatbot version 1.1.2
+ * author: ArtOfCode
+ * repo: https://github.com/ArtOfCode-/ArtOfChatbot
+ ***********************************/
+
 window.chatbot = {};
 
 chatbot.utils = {};
 chatbot.program = {};
 chatbot.commands = {};
 
+var utils = chatbot.utils;
+var program = chatbot.program;
+var commands = chatbot.commands;
+
 // ================= COMMANDS ==================
 
-chatbot.commands.help = function(arguments, user) {
+commands.help = function(arguments, user) {
 	var commandList = "";
-	var commandKeys = Object.keys(chatbot.commands.commandList);
+	var commandKeys = Object.keys(commands.commandList);
 	for(var i = 0; i < commandKeys.length; i++) {
 		if(i == 0) {
 			commandList += commandKeys[i];
@@ -17,78 +27,111 @@ chatbot.commands.help = function(arguments, user) {
 			commandList += ", " + commandKeys[i];
 		}
 	}
-	chatbot.utils.sendUserMessage(user, "Commands: " + commandList, chatbot.utils.roomId);
+	utils.sendUserMessage(user, "Commands: " + commandList, utils.roomId);
 }
 
-chatbot.commands.running = function(arguments, user) {
-	chatbot.utils.sendUserMessage(user, "Alive and kicking!", chatbot.utils.roomId);
+commands.running = function(arguments, user) {
+	utils.sendUserMessage(user, "Alive and kicking!", utils.roomId);
 }
 
-chatbot.commands.lowQuality = function(arguments, user) {
+commands.lowQuality = function(arguments, user) {
 	if(!arguments[1]) {
-		chatbot.utils.sendUserMessage(user, "Correct usage is /low-quality <sitename>", chatbot.utils.roomId);
+		utils.sendUserMessage(user, "Correct usage is /low-quality <sitename>", utils.roomId);
 	}
 	else {
 		var url = "http://data.stackexchange.com/" + arguments[1].toLowerCase() + "/query/300384/possible-downvote-worthy-answers#resultSets";
-		chatbot.utils.sendUserMessage(user, "Low Quality posts data can be found [here](" + url + ").", chatbot.utils.roomId);
+		utils.sendUserMessage(user, "Low Quality posts data can be found [here](" + url + ").", utils.roomId);
 	}
 }
 
-chatbot.commands.findUser = function(arguments, user) {
+commands.findUser = function(arguments, user) {
 	if(!arguments[1]) {
-		chatbot.utils.sendUserMessage(user, "Correct usage is '/find-user <id>'.", chatbot.utils.roomId);
+		utils.sendUserMessage(user, "Correct usage is '/find-user <id>'.", utils.roomId);
 		return;
 	}
 	if(isNaN(arguments[1])) {
-		chatbot.utils.sendUserMessage(user, "Correct usage is '/find-user <id>'.", chatbot.utils.roomId);
+		utils.sendUserMessage(user, "Correct usage is '/find-user <id>'.", utils.roomId);
 		return;
 	}
 	else {
-		chatbot.utils.sendUserMessage(user, "[User " + arguments[1] + "](http://worldbuilding.stackexchange.com/users/" + arguments[1] + ")", chatbot.utils.roomId);
+		utils.sendUserMessage(user, "[User " + arguments[1] + "](http://worldbuilding.stackexchange.com/users/" + arguments[1] + ")", utils.roomId);
 	}
 }
 
-chatbot.commands.stop = function(arguments, user) {
-	if(user !== "ArtOfCode" && user !== chatbot.utils.initiatingUser) {
-		chatbot.utils.sendMessage("I'm sorry, @" + user + ". I can't let you do that.", chatbot.utils.roomId);
-		chatbot.utils.sendMessage("If you want to shut me down, ping " + chatbot.utils.initiatingUser + " to do it.", chatbot.utils.roomId);
+commands.stop = function(arguments, user) {
+	if(user !== "ArtOfCode" && user !== utils.initiatingUser) {
+		utils.sendMessage("I'm sorry, @" + user + ". I can't let you do that.", utils.roomId);
+		utils.sendMessage("If you want to shut me down, ping " + utils.initiatingUser + " to do it.", utils.roomId);
 	}
 	else {
 		$("body").off("DOMNodeInserted");
-		chatbot.utils.sendUserMessage(user, chatbot.utils.name + " shut down. To restart, run `chatbot.program.main()` from your console.", chatbot.utils.roomId);
-		chatbot.utils.isRunning = false;
+		utils.sendUserMessage(user, utils.name + " shut down. To restart, run `chatbot.program.main()` from your console.", utils.roomId);
+		utils.isRunning = false;
 	}
 }
 
-chatbot.commands.champagne = function(arguments, user) {
-	chatbot.utils.sendUserMessage(user, "Woooooo! *corks pop* Party!", chatbot.utils.roomId);
+commands.champagne = function(arguments, user) {
+	utils.sendUserMessage(user, "Woooooo! *corks pop* Party!", utils.roomId);
+}
+
+commands.ban = function(arguments, user) {
+	if(user !== "ArtOfCode" && user !== utils.initiatingUser) {
+		utils.sendMessage("I'm sorry, @" + user + ". I can't let you do that.", utils.roomId);
+		utils.sendMessage("Only " + utils.initiatingUser + " can ban users.", utils.roomId);
+	}
+	else {
+		if(!arguments[1]) {
+			utils.sendUserMessage(user, "Correct usage is '/ban <username>'.", utils.roomId);
+			return;
+		}
+		utils.bannedUsers[arguments[1]] = true;
+		utils.sendUserMessage(user, "Successfully revoked access for " + arguments[1] + ".", utils.roomId);
+	}
+}
+
+commands.unban = function(arguments, user) {
+	if(user !== "ArtOfCode" && user !== utils.initiatingUser) {
+		utils.sendMessage("I'm sorry, @" + user + ". I can't let you do that.", utils.roomId);
+		utils.sendMessage("Only " + utils.initiatingUser + " can unban users.", utils.roomId);
+	}
+	else {
+		if(!arguments[1]) {
+			utils.sendUserMessage(user, "Correct usage is '/unban <username>'.", utils.roomId);
+			return;
+		}
+		utils.bannedUsers[arguments[1]] = false;
+		utils.sendUserMessage(user, "Successfully granted access to " + arguments[1] + ".", utils.roomId);
+	}
 }
 
 // NOTE: Must come AFTER the command declarations
-chatbot.commands.commandList = {
-	"help": chatbot.commands.help,
-	"stop": chatbot.commands.stop,
-	"low-quality": chatbot.commands.lowQuality,
-	"find-user": chatbot.commands.findUser,
-	"champagne": chatbot.commands.champagne,
-	"running?": chatbot.commands.running
+commands.commandList = {
+	"help": commands.help,
+	"stop": commands.stop,
+	"low-quality": commands.lowQuality,
+	"find-user": commands.findUser,
+	"champagne": commands.champagne,
+	"running?": commands.running,
+	"ban": commands.ban,
+	"unban": commands.unban
 };
 
 // ================= UTILITIES =================
 
-chatbot.utils.roomId = "17213";
-chatbot.utils.initiatingUser = "";
-chatbot.utils.isRunning = false;
-chatbot.utils.name = "ArtOfChatbot";
-chatbot.utils.commandPrefix = "/"
+utils.roomId = "17213";
+utils.initiatingUser = "";
+utils.isRunning = false;
+utils.name = "ArtOfChatbot";
+utils.commandPrefix = "/";
+utils.bannedUsers = {};
 
-chatbot.utils.debug = function(str) {
+utils.debug = function(str) {
     var date = new Date().toTimeString().substring(0, 8);
-    console.log("[" + date + " CHATBOT] " + str);
+    console.log("[" + date + "  " + str);
 }
 
-chatbot.utils.sendMessage = function(text, id) {
-	text = "[" + chatbot.utils.name + "] " + text;
+utils.sendMessage = function(text, id) {
+	text = "[" + utils.name + "] " + text;
 	function send() {
 		$.ajax({
 			"type": "POST",
@@ -101,55 +144,62 @@ chatbot.utils.sendMessage = function(text, id) {
 		});
 	}
 	function error() {
-		chatbot.utils.debug("Could not send, waiting 1500.");
+		utils.debug("Could not send, waiting 1500.");
 		window.setTimeout(send, 1500);
 	}
 	send();
 }
 
-chatbot.utils.sendUserMessage = function(user, text, id) {
+utils.sendUserMessage = function(user, text, id) {
 	text = "@" + user + ": " + text;
-	chatbot.utils.sendMessage(text, id);
+	utils.sendMessage(text, id);
 }
 
 // ================== PROGRAM ==================
 
-chatbot.program.main = function() {
-	chatbot.utils.isRunning = true;
+program.main = function() {
+	utils.isRunning = true;
 	
 	var url = location.href;
 	url = url.split("/");
-	chatbot.utils.roomId = isNaN(url[4]) ? "-1" : url[4];
-	if(chatbot.utils.roomId === "-1") {
-		chatbot.utils.debug("This URL doesn't appear to represent a valid StackExchange chatroom. Chatbot cannot run here.");
+	utils.roomId = isNaN(url[4]) ? "-1" : url[4];
+	if(utils.roomId === "-1") {
+		utils.debug("This URL doesn't appear to represent a valid StackExchange chatroom. Cannot run here.");
 		return;
 	}
 	
-	chatbot.utils.initiatingUser = $(".user-container > .avatar > img").attr("alt");
-	chatbot.utils.debug(chatbot.utils.name + " running, initiated by " + chatbot.utils.initiatingUser);
+	utils.initiatingUser = $(".user-container > .avatar > img").attr("alt");
+	utils.debug(utils.name + " running, initiated by " + utils.initiatingUser);
 	
-	chatbot.utils.sendMessage("**" + chatbot.utils.name + " has been started!** Run 'help' for a list of commands.", chatbot.utils.roomId);
+	utils.sendMessage("**" + utils.name + " has been started!** Run 'help' for a list of commands.", utils.roomId);
 	
 	$("body").on("DOMNodeInserted", function(event) {
 		if($(event.target).hasClass("message") && $(event.target).hasClass("neworedit")) {
 			var signature = $(event.target).parent().siblings(".signature");
 			var user = signature.children(".username").text();
 			var message = $(event.target).children(".content").text();
-			chatbot.program.handleNewMessage(message, user);
+			var messageId = $(event.target).attr("id").split("-")[1];
+			program.handleNewMessage(message, user, messageId);
 		}
 	});
 }
 
-chatbot.program.handleNewMessage = function(message, user) {
-	chatbot.utils.debug("Recieved message '" + message + "' from " + user);
-	if(message.startsWith(chatbot.utils.commandPrefix)) {
+program.handleNewMessage = function(message, user, id) {
+	utils.debug("Received message '" + message + "' from " + user);
+	if(utils.bannedUsers[user]) {
+		return;
+	}
+	if(message.startsWith(utils.commandPrefix)) {
 		var commandName = message.split(" ")[0].substring(1);
-		chatbot.utils.debug("Starts with /, interpreting as command '" + commandName + "'.");
+		utils.debug("Starts with /, interpreting as command '" + commandName + "'.");
 		try {
-			chatbot.commands.commandList[commandName](message.split(" "), user);
+			commands.commandList[commandName](message.split(" "), user);
 		}
 		catch(e) {
-			chatbot.utils.sendUserMessage(user, "Invalid command - run 'help' for a list.", chatbot.utils.roomId);
+			utils.sendUserMessage(user, "Invalid command - run 'help' for a list.", utils.roomId);
 		}
+	}
+	if(message.indexOf("@Mods") > -1) {
+		utils.sendMessage("@TimB/@MonicaCellio/@MichaelKjörling [you've been mod-pinged!](http://chat.stackexchange.com/transcript/message/" + id + "#" + id + ")", utils.roomId);
 	}
 }
