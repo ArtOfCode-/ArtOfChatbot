@@ -32,4 +32,4 @@ The API can be found in the `chatapi.js` file. It's easy to use: copy the code i
 **`chatAPI.runChatbot()`** - fairly self-explanatory. Runs the chatbot, i.e. starts it accepting commands and responding.
 
 ## Bot and License
-The bot is not intended to be used directly, instead it is intended to be run in conjunction with the chat API. However, this work is under the [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html) license; you are free to copy, modify, redistribute, sell on and share the work, under the condition that you credit me. **I ALSO IMPOSE** a Share-Alike type condition: any redistribution you make including this work MUST be licensed under the same license.
+The bot is not intended to be used directly, instead it is intended to be run in conjunction with the chat API. However, this work is under the [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html) license.
